@@ -5,7 +5,7 @@
 
 `default_nettype none
 
-module tt_um_example (
+module tt_um_uwasic_onboarding_keevan (
     input  wire [7:0] ui_in,    // Dedicated inputs
     output wire [7:0] uo_out,   // Dedicated outputs
     input  wire [7:0] uio_in,   // IOs: Input path
@@ -16,12 +16,29 @@ module tt_um_example (
     input  wire       rst_n     // reset_n - low to reset
 );
 
-  // All output pins must be assigned. If not used, assign to 0.
-  assign uo_out  = ui_in + uio_in;  // Example: ou_out is the sum of ui_in and uio_in
-  assign uio_out = 0;
-  assign uio_oe  = 0;
+  // Configure all bidirectional pins as outputs.
+  assign uio_oe = 8'hFF;
 
-  // List all unused inputs to prevent warnings
-  wire _unused = &{ena, clk, rst_n, 1'b0};
+  // These wires will receive values from your SPI module.
+  wire [7:0] en_reg_out_7_0;
+  wire [7:0] en_reg_out_15_8;
+  wire [7:0] en_reg_pwm_7_0;
+  wire [7:0] en_reg_pwm_15_8;
+  wire [7:0] pwm_duty_cycle;
+
+  // Connect the provided PWM module.
+  pwm_peripheral pwm_peripheral_inst (
+      .clk(clk),
+      .rst_n(rst_n),
+      .en_reg_out_7_0(en_reg_out_7_0),
+      .en_reg_out_15_8(en_reg_out_15_8),
+      .en_reg_pwm_7_0(en_reg_pwm_7_0),
+      .en_reg_pwm_15_8(en_reg_pwm_15_8),
+      .pwm_duty_cycle(pwm_duty_cycle),
+      .out({uio_out, uo_out})
+  );
+
+  // Inputs not used by the completed design.
+  wire _unused = &{ena, ui_in[7:3], uio_in, 1'b0};
 
 endmodule
