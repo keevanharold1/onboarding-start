@@ -26,6 +26,20 @@ module tt_um_uwasic_onboarding_keevan (
   wire [7:0] en_reg_pwm_15_8;
   wire [7:0] pwm_duty_cycle;
 
+  // Connecting the SPI peripheral to the appropriate pins.
+  spi_peripheral spi_peripheral_inst (
+      .clk(clk),
+      .rst_n(rst_n),
+      .sclk(ui_in[0]),
+      .copi(ui_in[1]),
+      .ncs(ui_in[2]),
+      .en_reg_out_7_0(en_reg_out_7_0),
+      .en_reg_out_15_8(en_reg_out_15_8),
+      .en_reg_pwm_7_0(en_reg_pwm_7_0),
+      .en_reg_pwm_15_8(en_reg_pwm_15_8),
+      .pwm_duty_cycle(pwm_duty_cycle)
+  );
+
   // Connect the provided PWM module.
   pwm_peripheral pwm_peripheral_inst (
       .clk(clk),
